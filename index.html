@@ -865,7 +865,7 @@ function renderDept(RAW, TOPICS, deptIdx) {
     setTimeout(function(){ row.querySelector('.leader-bar-fill').style.width = p + '%'; }, 80 + i * 40);
   });
 
-  /* Top 10 combo chart */
+  /* Top 10 combo chart - UPDATED WITH VISIBLE SCORES */
   var top10       = sorted.slice(0, 10);
   var chartLabels = top10.map(function(s){ return shortName(s); });
   var chartTotals = top10.map(function(s){ return +s.total.toFixed(2); });
@@ -886,7 +886,18 @@ function renderDept(RAW, TOPICS, deptIdx) {
             return i === 0 ? '#b8860b' : i === 1 ? '#0a5c44' : i === 2 ? '#0f6b7a' : '#0a5c44';
           }),
           borderWidth: 1.5, borderRadius: 5, borderSkipped: false, yAxisID: 'yScore', order: 2,
-          datalabels: { anchor:'end', align:'end', offset:2, color:'#4a3f2a', font:{family:"'Fira Code',monospace",size:9,weight:'600'}, formatter:function(v){return v;} }
+          datalabels: { 
+            display: true,
+            anchor:'end', 
+            align:'top', 
+            offset: 4, 
+            color:'#1a1208', 
+            font:{family:"'Fira Code',monospace",size:11,weight:'700'}, 
+            formatter:function(v){return v;},
+            backgroundColor: 'rgba(255,255,255,0.85)',
+            borderRadius: 4,
+            padding: { top: 3, bottom: 3, left: 6, right: 6 }
+          }
         },
         {
           type: 'line', label: 'Score Trend', data: chartTotals,
@@ -901,6 +912,14 @@ function renderDept(RAW, TOPICS, deptIdx) {
     options: {
       responsive: true, maintainAspectRatio: false, devicePixelRatio: window.devicePixelRatio || 1,
       interaction: { mode:'index', intersect:false },
+      layout: {
+        padding: {
+          top: 35,
+          right: 10,
+          bottom: 10,
+          left: 10
+        }
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -925,7 +944,11 @@ function renderDept(RAW, TOPICS, deptIdx) {
           grid:{color:'rgba(200,185,155,0.18)',lineWidth:0.8},
           ticks:{color:'#0a5c44',font:{family:"'Fira Code',monospace",size:10}},
           border:{color:'rgba(200,185,155,0.35)'},
-          title:{display:true,text:'Total Score',color:'#0a5c44',font:{family:"'Fira Code',monospace",size:9,weight:'700'},padding:{bottom:4}}
+          title:{display:true,text:'Total Score',color:'#0a5c44',font:{family:"'Fira Code',monospace",size:9,weight:'700'},padding:{bottom:4}},
+          suggestedMax: function(context) {
+            var max = Math.max.apply(null, context.chart.data.datasets[0].data);
+            return max * 1.15;
+          }
         }
       }
     }
